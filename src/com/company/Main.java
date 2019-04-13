@@ -1,10 +1,9 @@
 package com.company;
 
 import com.company.handlers.convert.ConvertHandler;
-import com.company.handlers.files.IndexJsHandler;
-import com.company.handlers.files.JQueryHandler;
-import com.company.handlers.files.StylesHandler;
-import com.company.handlers.pages.*;
+import com.company.handlers.pages.AddStudentHandler;
+import com.company.handlers.pages.DeleteStudentHandler;
+import com.company.handlers.pages.GetStudentsHandler;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -24,20 +23,10 @@ public class Main {
         return studentList;
     }
 
-    public static void setStudentList(List<Student> students) {
-        studentList = students;
-    }
-
     public static void main(String[] args) {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(8083), 1);
-            server.createContext("/jquery", new JQueryHandler());
-            server.createContext("/index", new IndexJsHandler());
-            server.createContext("/styles", new StylesHandler());
-            server.createContext("/front_page", new FrontPageHandler());
-            server.createContext("/second_page", new SecondPageHandler());
             server.createContext("/convert", new ConvertHandler());
-            server.createContext("/table", new TablePageHandler());
             server.createContext("/add_student", new AddStudentHandler());
             server.createContext("/get_students", new GetStudentsHandler());
             server.createContext("/delete_student", new DeleteStudentHandler());
