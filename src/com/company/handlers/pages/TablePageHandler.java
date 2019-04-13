@@ -1,8 +1,11 @@
 package com.company.handlers.pages;
 
 import com.company.Main;
+import com.company.Student;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+
+import java.util.List;
 
 public class TablePageHandler implements HttpHandler {
 
@@ -10,35 +13,34 @@ public class TablePageHandler implements HttpHandler {
     public void handle(HttpExchange t) {
         if (t.getRequestMethod().equalsIgnoreCase("GET")) {
             String resp =
-                    "<table class=\"table information_json\">" +
+                    "<table>" +
                             "<tr>" +
-                            "<th>Название поля</th>" +
-                            "<th>Значение поля</th>" +
-                            "<th></th>" +
+                            "<th>Имя</th>" +
+                            "<th>Фамилия</th>" +
+                            "<th>Год рождения</th>" +
                             "</tr>" +
-                            "<tr class=\"information_json_plus\">" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td><span class=\"btn btn-success plus pull-right\">+</span></td>" +
-                            "</tr>" +
-                            "</table>" +
-                            "<script>" +
-                            "// формируем новые поля" +
-                            "jQuery('.plus').click(function(){" +
-                            "jQuery('.information_json_plus').before(" +
-                            "'<tr>' +\n" +
-                            "'<td><input type=\"text\" class=\"form-control\" id=\"information_json_name[]\" placeholder=\"Название поля\"></td>' +" +
-                            "'<td><input type=\"text\" class=\"form-control\" id=\"information_json_val[]\" placeholder=\"Значение поля\"></td>' +" +
-                            "'<td><span class=\"btn btn-danger minus pull-right\">&ndash;</span></td>' +" +
-                            "'</tr>'" +
-                            ");" +
-                            "});" +
-                            "jQuery(document).on('click', '.minus', function(){" +
-                            "jQuery( this ).closest( 'tr' ).remove();" +
-                            "});" +
-                            "</script>";
+                            getStudentList(Main.getStudentList()) +
+                            "</table>";
             t.setAttribute("Content-Type", "text/html");
             Main.writeResponse(t, resp);
         }
+    }
+
+    private String getStudentList(List<Student> studentList) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Student student :
+                studentList) {
+            stringBuilder.append(addStudent(student));
+        }
+        return stringBuilder.toString();
+    }
+
+    private String addStudent(Student student) {
+        return String.format("<tr>" +
+                "<td><input type=\"text\" readonly value=%s></td>" +
+                "<td><input type=\"text\" readonly value=%s></td>" +
+                "<td><input type=\"text\" readonly value=%s></td>" +
+                "<td><span class=\"btn\" id=\"%s\" onclick=\"deleteStudent(event)\">&ndash;</span></td>" +
+                "</tr>", student.getFirstName(), student.getLastName(), student.getYearBirth(), student.getId());
     }
 }
